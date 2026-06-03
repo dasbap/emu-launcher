@@ -1,0 +1,15 @@
+
+# Example emulator config for `emu` script
+# Format: name=/full/path/to/emulator
+# Extension mappings use: ext.<extension>=<emulator-name>
+# ROM scan paths use: rompath.<name>=/path/to/roms
+# ROM scan extensions use: romext.<extension>=1
+# Add emulators with: emu --add-emu <name> /full/path/to/emulator
+# Add mappings with: emu --map-ext <extension> <emulator-name>
+# Add ROM paths with: emu --add-rom-path <name> /path/to/roms
+# Add scan extensions with: emu --add-rom-ext <extension>
+# Example:
+# retroarch=/usr/bin/retroarch
+# ext.nes=retroarch
+# rompath.nes=~/Games/NES
+# romext.nes=1
