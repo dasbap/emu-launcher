@@ -1,3 +1,8 @@
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
 _emu()
 {
   local cur prev config games words
@@ -7,7 +12,7 @@ _emu()
   config="${XDG_CONFIG_HOME:-$HOME/.config}/emu/config"
   games="${XDG_CONFIG_HOME:-$HOME/.config}/emu/games"
 
-  words="--help -h --list -l --foreground -f --dry-run --verbose -v scan doctor --add-emu --add-game --add-rom-path --remove-rom-path --add-rom-ext --remove-rom-ext --list-rom-ext --link --unlink --remove-game --remove-emu --map-ext --install -i --clear-config"
+  words="--help -h --list -l --foreground -f --dry-run --verbose -v scan doctor --add-emu --add-game --add-rom-path --remove-rom-path --add-rom-ext --remove-rom-ext --list-rom-ext --link --unlink --remove-game --remove-emu --map-ext --install -i --update --clear-config"
 
   case "$prev" in
     --add-emu|--add-game|--add-rom-path|--add-rom-ext|--map-ext)

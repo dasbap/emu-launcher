@@ -1,6 +1,7 @@
 # emu - simple emulator launcher
 
 Lightweight Bash wrapper that launches configured emulators from the command line.
+The public command is `emu`; most implementation details live in Bash modules under `lib/emu/`.
 
 ## Install
 
@@ -17,13 +18,23 @@ Or use the built-in installer:
 ```bash
 ./emu --install        # installs to ~/.local/bin
 ./emu --install --system  # installs to /usr/local/bin if you have permission
+./emu --update         # updates only changed installed files by SHA-256 hash
 ```
 
-Optional Bash completion:
+The installer copies the command to `~/.local/bin/emu`, its modules to `~/.local/lib/emu`, and Bash completion to `~/.local/share/bash-completion/completions/emu` by default.
+For a user installation, it adds an idempotent POSIX block to `~/.profile` so `~/.local/bin` is included in the global user-session `PATH` only when absent. It also configures `~/.bashrc` and `~/.config/fish/config.fish` for interactive Bash and Fish terminals. Bash completion is loaded automatically in Bash.
+With `--system`, it uses `/usr/local/bin/emu`, `/usr/local/lib/emu`, and `/usr/local/share/bash-completion/completions/emu`.
+Before copying, `--install` removes the previous installed command and previous installed `.bash` modules in the target directory.
+Use `--update` from the repository checkout to compare the command, each module, and Bash completion by SHA-256 hash; unchanged files are left untouched, and only changed files are copied.
+`--update --system` applies the same logic to `/usr/local/bin/emu`, `/usr/local/lib/emu`, and `/usr/local/share/bash-completion/completions/emu`.
+The `emu` command is available automatically after opening a new terminal; a new login session also receives the path from `~/.profile`. Bash completion is available in Bash. Run `source ~/.local/share/bash-completion/completions/emu` to enable both immediately in an already-open Bash shell. In an already-open Fish shell, run `fish_add_path ~/.local/bin`.
+
+Manual Bash completion installation:
 
 ```bash
 mkdir -p ~/.local/share/bash-completion/completions
 cp completions/emu.bash ~/.local/share/bash-completion/completions/emu
+source ~/.local/share/bash-completion/completions/emu
 ```
 
 ## Configuration
@@ -88,7 +99,9 @@ emu --clear-config
 
 ## Usage
 
-List configured emulators:
+Run `emu` without arguments to display the help. This behaves like `emu --help` and does not create or modify the user configuration.
+
+List configured emulators only. Extension mappings, ROM paths, and scan extensions are managed by their dedicated commands and are not shown here.
 
 ```bash
 emu --list
