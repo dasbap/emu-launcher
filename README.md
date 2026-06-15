@@ -2,24 +2,19 @@
 
 Lightweight Bash wrapper that launches configured emulators from the command line.
 The public command is `emu`; most implementation details live in Bash modules under `lib/emu/`.
+Installation and updates are provided by the shared sibling package `install-update-launcher`.
 
 ## Install
 
-Place the `emu` script in a directory in your PATH, for example:
-
-```bash
-mkdir -p ~/.local/bin
-cp emu ~/.local/bin/emu
-chmod +x ~/.local/bin/emu
-```
-
-Or use the built-in installer:
+Use the built-in installer so the command, application modules, shared installer library, and completion are copied together:
 
 ```bash
 ./emu --install        # installs to ~/.local/bin
 ./emu --install --system  # installs to /usr/local/bin if you have permission
 ./emu --update         # updates only changed installed files by SHA-256 hash
 ```
+
+During development, keep `install-update-launcher` next to `emu-launcher`. The installed command receives its own copy of the shared library, so it remains autonomous. You can also point to the library explicitly with `INSTALL_UPDATE_LAUNCHER_LIB=/path/to/install-update-launcher.bash` or install the shared package first.
 
 The installer copies the command to `~/.local/bin/emu`, its modules to `~/.local/lib/emu`, and Bash completion to `~/.local/share/bash-completion/completions/emu` by default.
 For a user installation, it adds an idempotent POSIX block to `~/.profile` so `~/.local/bin` is included in the global user-session `PATH` only when absent. It also configures `~/.bashrc` and `~/.config/fish/config.fish` for interactive Bash and Fish terminals. Bash completion is loaded automatically in Bash.

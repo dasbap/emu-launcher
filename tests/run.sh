@@ -92,14 +92,15 @@ printf 'old command\n' > "$TEST_HOME/.local/bin/emu"
 printf 'old module\n' > "$TEST_HOME/.local/lib/emu/old.bash"
 HOME="$TEST_HOME" "$ROOT/emu" --install >/dev/null
 [[ -x "$TEST_HOME/.local/bin/emu" ]] || fail "installed command is not executable"
+[[ -f "$TEST_HOME/.local/lib/emu/install-update-launcher.bash" ]] || fail "shared installer library was not installed"
 [[ ! -e "$TEST_HOME/.local/lib/emu/old.bash" ]] || fail "old module occurrence was not removed"
 [[ -f "$TEST_HOME/.local/share/bash-completion/completions/emu" ]] || fail "Bash completion was not installed"
 [[ -f "$TEST_HOME/.profile" ]] || fail ".profile was not configured"
-[[ "$(grep -Fc '# >>> emu launcher PATH >>>' "$TEST_HOME/.profile")" -eq 1 ]] || fail "emu global user PATH setup should occur once"
+[[ "$(grep -Fc '# >>> launcher tools PATH >>>' "$TEST_HOME/.profile")" -eq 1 ]] || fail "shared launcher PATH setup should occur once"
 [[ -f "$TEST_HOME/.bashrc" ]] || fail ".bashrc was not configured"
 [[ "$(grep -Fc '# >>> emu launcher >>>' "$TEST_HOME/.bashrc")" -eq 1 ]] || fail "emu Bash setup should occur once"
 [[ -f "$TEST_HOME/.config/fish/config.fish" ]] || fail "Fish config was not configured"
-[[ "$(grep -Fc '# >>> emu launcher >>>' "$TEST_HOME/.config/fish/config.fish")" -eq 1 ]] || fail "emu Fish setup should occur once"
+[[ "$(grep -Fc '# >>> launcher tools PATH >>>' "$TEST_HOME/.config/fish/config.fish")" -eq 1 ]] || fail "shared launcher Fish setup should occur once"
 HOME="$TEST_HOME" PATH="/usr/bin:/bin" bash -c "source '$TEST_HOME/.local/share/bash-completion/completions/emu'; command -v emu; complete -p emu" >/dev/null
 HOME="$TEST_HOME" PATH="/usr/bin:/bin" sh -c ". '$TEST_HOME/.profile'; command -v emu" >/dev/null
 HOME="$TEST_HOME" PATH="/usr/bin:/bin" bash --rcfile "$TEST_HOME/.bashrc" -ic "command -v emu; complete -p emu" >/dev/null 2>&1
@@ -108,9 +109,9 @@ if FISH_BIN="$(command -v fish 2>/dev/null)"; then
 fi
 HOME="$TEST_HOME" "$TEST_HOME/.local/bin/emu" --help >/dev/null
 HOME="$TEST_HOME" "$ROOT/emu" --install >/dev/null
-[[ "$(grep -Fc '# >>> emu launcher PATH >>>' "$TEST_HOME/.profile")" -eq 1 ]] || fail "reinstall duplicated emu global user PATH setup"
+[[ "$(grep -Fc '# >>> launcher tools PATH >>>' "$TEST_HOME/.profile")" -eq 1 ]] || fail "reinstall duplicated shared launcher PATH setup"
 [[ "$(grep -Fc '# >>> emu launcher >>>' "$TEST_HOME/.bashrc")" -eq 1 ]] || fail "reinstall duplicated emu Bash setup"
-[[ "$(grep -Fc '# >>> emu launcher >>>' "$TEST_HOME/.config/fish/config.fish")" -eq 1 ]] || fail "reinstall duplicated emu Fish setup"
+[[ "$(grep -Fc '# >>> launcher tools PATH >>>' "$TEST_HOME/.config/fish/config.fish")" -eq 1 ]] || fail "reinstall duplicated shared launcher Fish setup"
 
 printf 'changed command\n' > "$TEST_HOME/.local/bin/emu"
 printf 'changed module\n' > "$TEST_HOME/.local/lib/emu/core.bash"
