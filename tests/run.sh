@@ -135,7 +135,7 @@ update_output="$(HOME="$TEST_HOME" EMU_REPOSITORY="file://$EMU_REMOTE" "$ROOT/em
 assert_contains "$update_output" "Updated command"
 assert_contains "$update_output" "Updated module core.bash"
 assert_contains "$update_output" "Updated Bash completion"
-assert_contains "$update_output" "Unchanged module config.bash"
+[[ "$update_output" != *"Unchanged"* ]] || fail "update output should not list unchanged files"
 HOME="$TEST_HOME" PATH="/usr/bin:/bin" bash -c "source '$TEST_HOME/.local/share/bash-completion/completions/emu'; command -v emu; complete -p emu" >/dev/null
 HOME="$TEST_HOME" "$TEST_HOME/.local/bin/emu" --help >/dev/null
 
