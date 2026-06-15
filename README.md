@@ -20,7 +20,18 @@ Use the built-in installer so the command, application modules, shared installer
 
 For a standalone installation, clone or download this repository and run `./emu --install`. If the shared library is unavailable, the installer downloads it from `https://github.com/dasbap/install-update-launcher.git`. The installed command receives its own copy and remains autonomous.
 
-`emu --update` downloads `https://github.com/dasbap/emu-launcher.git` at `main`. Override the source with `EMU_REPOSITORY` and `EMU_REF`; override the shared dependency with `INSTALL_UPDATE_REPOSITORY` and `INSTALL_UPDATE_REF`.
+`emu --update` downloads the selected branch from `https://github.com/dasbap/emu-launcher.git`. Override the source with `EMU_REPOSITORY` and `EMU_REF`; override the shared dependency with `INSTALL_UPDATE_REPOSITORY` and `INSTALL_UPDATE_REF`.
+
+Select a deployment channel when updating:
+
+```bash
+emu --update --channel stable       # release
+emu --update --channel prerelease   # pre-release
+emu --update --channel development  # main
+emu --update --ref v1.2.0           # exact branch or tag
+```
+
+The default is `stable`. Direct installation copies the downloaded checkout; clone the desired branch first. When the shared installer must be downloaded during installation, `--channel` selects its matching branch.
 
 The installer copies the command to `~/.local/bin/emu`, its modules to `~/.local/lib/emu`, and Bash completion to `~/.local/share/bash-completion/completions/emu` by default.
 For a user installation, it adds an idempotent POSIX block to `~/.profile` so `~/.local/bin` is included in the global user-session `PATH` only when absent. It also configures `~/.bashrc` and `~/.config/fish/config.fish` for interactive Bash and Fish terminals. Bash completion is loaded automatically in Bash.

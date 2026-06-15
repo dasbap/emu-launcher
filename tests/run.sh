@@ -127,7 +127,9 @@ git -C "$EMU_REMOTE" config user.email test@example.invalid
 git -C "$EMU_REMOTE" add -A
 git -C "$EMU_REMOTE" commit -qm initial
 git -C "$EMU_REMOTE" branch -M main
-update_output="$(HOME="$TEST_HOME" EMU_REPOSITORY="file://$EMU_REMOTE" "$ROOT/emu" --update)"
+git -C "$EMU_REMOTE" branch release
+git -C "$EMU_REMOTE" branch pre-release
+update_output="$(HOME="$TEST_HOME" EMU_REPOSITORY="file://$EMU_REMOTE" "$ROOT/emu" --update --channel stable)"
 assert_contains "$update_output" "Updated command"
 assert_contains "$update_output" "Updated module core.bash"
 assert_contains "$update_output" "Updated Bash completion"
@@ -146,6 +148,8 @@ git -C "$SHARED_REMOTE" config user.email test@example.invalid
 git -C "$SHARED_REMOTE" add -A
 git -C "$SHARED_REMOTE" commit -qm initial
 git -C "$SHARED_REMOTE" branch -M main
+git -C "$SHARED_REMOTE" branch release
+git -C "$SHARED_REMOTE" branch pre-release
 
 ISOLATED_EMU="$TMP/isolated/emu-launcher"
 mkdir -p "$ISOLATED_EMU/lib/emu" "$ISOLATED_EMU/completions"

@@ -222,14 +222,12 @@ handle_config_command() {
       exit 0
       ;;
     --install|-i)
-      system=false
-      if [[ "${2:-}" == "--system" ]]; then system=true; fi
+      parse_deployment_options "${@:2}"
       install_emu "$system"
       exit 0
       ;;
     --update)
-      system=false
-      if [[ "${2:-}" == "--system" ]]; then system=true; fi
+      parse_deployment_options "${@:2}"
       update_emu "$system"
       exit 0
       ;;
@@ -244,6 +242,21 @@ handle_config_command() {
       exit 0
       ;;
   esac
+}
+
+parse_deployment_options() {
+  local option channel="$EMU_CHANNEL" ref="$EMU_REF"
+  system=false
+  while [[ $# -gt 0 ]]; do
+    option="$1"; shift
+    case "$option" in
+      --system) system=true ;;
+      --channel) [[ $# -gt 0 ]] || die "--channel requires a value" 2; channel="$1"; shift ;;
+      --ref) [[ $# -gt 0 ]] || die "--ref requires a value" 2; ref="$1"; shift ;;
+      *) die "unknown deployment option: $option" 2 ;;
+    esac
+  done
+  configure_deployment_ref "$channel" "$ref"
 }
 
 launch_from_args() {

@@ -18,7 +18,18 @@ Utilisez l'installateur intégré afin de copier ensemble la commande, les modul
 
 Pour une installation autonome, clonez ou téléchargez ce dépôt puis exécutez `./emu --install`. Si la bibliothèque partagée est absente, l'installateur la télécharge depuis `https://github.com/dasbap/install-update-launcher.git`. La commande installée reçoit sa propre copie et reste autonome.
 
-`emu --update` télécharge la branche `main` de `https://github.com/dasbap/emu-launcher.git`. La source peut être remplacée avec `EMU_REPOSITORY` et `EMU_REF`; la dépendance partagée avec `INSTALL_UPDATE_REPOSITORY` et `INSTALL_UPDATE_REF`.
+`emu --update` télécharge la branche sélectionnée depuis `https://github.com/dasbap/emu-launcher.git`. La source peut être remplacée avec `EMU_REPOSITORY` et `EMU_REF`; la dépendance partagée avec `INSTALL_UPDATE_REPOSITORY` et `INSTALL_UPDATE_REF`.
+
+Sélectionnez un canal de déploiement lors de la mise à jour :
+
+```bash
+emu --update --channel stable       # release
+emu --update --channel prerelease   # pre-release
+emu --update --channel development  # main
+emu --update --ref v1.2.0           # branche ou tag exact
+```
+
+Le canal par défaut est `stable`. L'installation directe copie le checkout téléchargé; clonez d'abord la branche souhaitée. Lorsque la bibliothèque partagée doit être téléchargée pendant l'installation, `--channel` sélectionne sa branche correspondante.
 
 L'installation utilisateur place `emu` dans `~/.local/bin/emu`, ses modules dans `~/.local/lib/emu` et la complétion Bash dans `~/.local/share/bash-completion/completions/emu`. Elle configure également `~/.profile`, `~/.bashrc` et `~/.config/fish/config.fish`.
 
