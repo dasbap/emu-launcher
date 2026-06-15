@@ -76,6 +76,7 @@ install_emu() {
 
 update_emu() {
   load_install_update_library
+  IUL_CONFIG_DIR_FALLBACK=emu
   iul_apply_from_git update "$1" "$EMU_REPOSITORY" "$EMU_REF" \
     emu-launcher emu emu lib/emu completions/emu.bash
   [[ -z "$INSTALL_UPDATE_CHECKOUT" ]] || rm -rf "$INSTALL_UPDATE_CHECKOUT"
