@@ -27,9 +27,13 @@ emu --update --channel stable       # release
 emu --update --channel prerelease   # pre-release
 emu --update --channel development  # main
 emu --update --ref v1.2.0           # branche ou tag exact
+emu --update --merge-config         # exécuter le hook de migration s'il existe
+emu --update --force-config         # ignorer la protection après vérification
 ```
 
 Le canal par défaut est `stable`. L'installation directe copie le checkout téléchargé; clonez d'abord la branche souhaitée. Lorsque la bibliothèque partagée doit être téléchargée pendant l'installation, `--channel` sélectionne sa branche correspondante.
+
+Les changements de schéma sont sauvegardés dans `~/.local/state/launcher-tools/backups/emu/`. Les upgrades et downgrades incompatibles s'arrêtent après sauvegarde jusqu'à l'utilisation d'un `--ref` compatible, de `--merge-config` ou de `--force-config`.
 
 L'installation utilisateur place `emu` dans `~/.local/bin/emu`, ses modules dans `~/.local/lib/emu` et la complétion Bash dans `~/.local/share/bash-completion/completions/emu`. Elle configure également `~/.profile`, `~/.bashrc` et `~/.config/fish/config.fish`.
 

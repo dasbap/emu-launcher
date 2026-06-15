@@ -247,12 +247,16 @@ handle_config_command() {
 parse_deployment_options() {
   local option channel="$EMU_CHANNEL" ref="$EMU_REF"
   system=false
+  IUL_MERGE_CONFIG=false
+  IUL_FORCE_CONFIG=false
   while [[ $# -gt 0 ]]; do
     option="$1"; shift
     case "$option" in
       --system) system=true ;;
       --channel) [[ $# -gt 0 ]] || die "--channel requires a value" 2; channel="$1"; shift ;;
       --ref) [[ $# -gt 0 ]] || die "--ref requires a value" 2; ref="$1"; shift ;;
+      --merge-config) IUL_MERGE_CONFIG=true ;;
+      --force-config) IUL_FORCE_CONFIG=true ;;
       *) die "unknown deployment option: $option" 2 ;;
     esac
   done

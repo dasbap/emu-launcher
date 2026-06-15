@@ -93,6 +93,7 @@ printf 'old module\n' > "$TEST_HOME/.local/lib/emu/old.bash"
 HOME="$TEST_HOME" "$ROOT/emu" --install >/dev/null
 [[ -x "$TEST_HOME/.local/bin/emu" ]] || fail "installed command is not executable"
 [[ -f "$TEST_HOME/.local/lib/emu/install-update-launcher.bash" ]] || fail "shared installer library was not installed"
+[[ -f "$TEST_HOME/.local/lib/emu/deploy.manifest" ]] || fail "deployment manifest was not installed"
 [[ ! -e "$TEST_HOME/.local/lib/emu/old.bash" ]] || fail "old module occurrence was not removed"
 [[ -f "$TEST_HOME/.local/share/bash-completion/completions/emu" ]] || fail "Bash completion was not installed"
 [[ -f "$TEST_HOME/.profile" ]] || fail ".profile was not configured"
@@ -117,10 +118,11 @@ printf 'changed command\n' > "$TEST_HOME/.local/bin/emu"
 printf 'changed module\n' > "$TEST_HOME/.local/lib/emu/core.bash"
 printf 'changed completion\n' > "$TEST_HOME/.local/share/bash-completion/completions/emu"
 EMU_REMOTE="$TMP/emu-remote"
-mkdir -p "$EMU_REMOTE/lib/emu" "$EMU_REMOTE/completions"
+mkdir -p "$EMU_REMOTE/lib/emu" "$EMU_REMOTE/completions" "$EMU_REMOTE/deploy"
 cp "$ROOT/emu" "$EMU_REMOTE/emu"
 cp "$ROOT"/lib/emu/*.bash "$EMU_REMOTE/lib/emu/"
 cp "$ROOT/completions/emu.bash" "$EMU_REMOTE/completions/emu.bash"
+cp "$ROOT/deploy/manifest" "$EMU_REMOTE/deploy/manifest"
 git -C "$EMU_REMOTE" init -q
 git -C "$EMU_REMOTE" config user.name test
 git -C "$EMU_REMOTE" config user.email test@example.invalid
@@ -138,10 +140,11 @@ HOME="$TEST_HOME" PATH="/usr/bin:/bin" bash -c "source '$TEST_HOME/.local/share/
 HOME="$TEST_HOME" "$TEST_HOME/.local/bin/emu" --help >/dev/null
 
 SHARED_REMOTE="$TMP/shared-remote"
-mkdir -p "$SHARED_REMOTE/lib/install-update-launcher"
+mkdir -p "$SHARED_REMOTE/lib/install-update-launcher" "$SHARED_REMOTE/deploy"
 cp "$ROOT/../install-update-launcher/install-update-launcher" "$SHARED_REMOTE/install-update-launcher"
 cp "$ROOT/../install-update-launcher/lib/install-update-launcher/install-update-launcher.bash" \
   "$SHARED_REMOTE/lib/install-update-launcher/install-update-launcher.bash"
+cp "$ROOT/../install-update-launcher/deploy/manifest" "$SHARED_REMOTE/deploy/manifest"
 git -C "$SHARED_REMOTE" init -q
 git -C "$SHARED_REMOTE" config user.name test
 git -C "$SHARED_REMOTE" config user.email test@example.invalid

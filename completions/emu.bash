@@ -12,7 +12,7 @@ _emu()
   config="${XDG_CONFIG_HOME:-$HOME/.config}/emu/config"
   games="${XDG_CONFIG_HOME:-$HOME/.config}/emu/games"
 
-  words="--help -h --list -l --foreground -f --dry-run --verbose -v scan doctor --add-emu --add-game --add-rom-path --remove-rom-path --add-rom-ext --remove-rom-ext --list-rom-ext --link --unlink --remove-game --remove-emu --map-ext --install -i --update --system --channel --ref stable prerelease development --clear-config"
+  words="--help -h --list -l --foreground -f --dry-run --verbose -v scan doctor --add-emu --add-game --add-rom-path --remove-rom-path --add-rom-ext --remove-rom-ext --list-rom-ext --link --unlink --remove-game --remove-emu --map-ext --install -i --update --system --channel --ref stable prerelease development --merge-config --force-config --clear-config"
 
   case "$prev" in
     --channel)

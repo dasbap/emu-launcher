@@ -29,9 +29,13 @@ emu --update --channel stable       # release
 emu --update --channel prerelease   # pre-release
 emu --update --channel development  # main
 emu --update --ref v1.2.0           # exact branch or tag
+emu --update --merge-config         # run the target migration hook when available
+emu --update --force-config         # bypass schema protection after review
 ```
 
 The default is `stable`. Direct installation copies the downloaded checkout; clone the desired branch first. When the shared installer must be downloaded during installation, `--channel` selects its matching branch.
+
+Configuration schema changes are backed up under `~/.local/state/launcher-tools/backups/emu/`. Incompatible downgrades or upgrades stop after backup unless a compatible `--ref`, `--merge-config`, or `--force-config` is selected.
 
 The installer copies the command to `~/.local/bin/emu`, its modules to `~/.local/lib/emu`, and Bash completion to `~/.local/share/bash-completion/completions/emu` by default.
 For a user installation, it adds an idempotent POSIX block to `~/.profile` so `~/.local/bin` is included in the global user-session `PATH` only when absent. It also configures `~/.bashrc` and `~/.config/fish/config.fish` for interactive Bash and Fish terminals. Bash completion is loaded automatically in Bash.

@@ -53,6 +53,11 @@ configure_installer_manifest() {
   IUL_COMMAND_NAME="emu"
   IUL_COMMAND_SOURCE="$SCRIPT_DIR/emu"
   IUL_MODULE_SOURCE_DIR="$MODULE_DIR"
+  if [[ -f "$SCRIPT_DIR/deploy/manifest" ]]; then
+    IUL_MANIFEST_SOURCE="$SCRIPT_DIR/deploy/manifest"
+  else
+    IUL_MANIFEST_SOURCE="$MODULE_DIR/deploy.manifest"
+  fi
   if [[ -f "$SCRIPT_DIR/completions/emu.bash" ]]; then
     IUL_COMPLETION_SOURCE="$SCRIPT_DIR/completions/emu.bash"
   elif [[ -f "$HOME/.local/share/bash-completion/completions/emu" ]]; then

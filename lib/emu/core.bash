@@ -31,6 +31,7 @@ Usage:
   emu --map-ext <extension> <emu-name>
   emu --install [--system] [--channel stable|prerelease|development] [--ref git-ref] | -i
   emu --update [--system] [--channel stable|prerelease|development] [--ref git-ref]
+               [--merge-config] [--force-config]
   emu --clear-config
 
 This is a lightweight, simple wrapper. Config files:
