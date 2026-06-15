@@ -1,5 +1,7 @@
 # emu - simple emulator launcher
 
+**English** | [Français](README.fr.md)
+
 Lightweight Bash wrapper that launches configured emulators from the command line.
 The public command is `emu`; most implementation details live in Bash modules under `lib/emu/`.
 Installation and updates are provided by the shared sibling package `install-update-launcher`.
