@@ -6,6 +6,8 @@ Lightweight Bash wrapper that launches configured emulators from the command lin
 The public command is `emu`; most implementation details live in Bash modules under `lib/emu/`.
 Installation and updates are provided by the shared sibling package `install-update-launcher`.
 
+`emu` installs and updates only itself. Cross-project installation is owned exclusively by `uni-launcher`.
+
 ## Install
 
 Use the built-in installer so the command, application modules, shared installer library, and completion are copied together:
@@ -16,13 +18,15 @@ Use the built-in installer so the command, application modules, shared installer
 ./emu --update         # updates only changed installed files by SHA-256 hash
 ```
 
-During development, keep `install-update-launcher` next to `emu-launcher`. The installed command receives its own copy of the shared library, so it remains autonomous. You can also point to the library explicitly with `INSTALL_UPDATE_LAUNCHER_LIB=/path/to/install-update-launcher.bash` or install the shared package first.
+For a standalone installation, clone or download this repository and run `./emu --install`. If the shared library is unavailable, the installer downloads it from `https://github.com/dasbap/install-update-launcher.git`. The installed command receives its own copy and remains autonomous.
+
+`emu --update` downloads `https://github.com/dasbap/emu-launcher.git` at `main`. Override the source with `EMU_REPOSITORY` and `EMU_REF`; override the shared dependency with `INSTALL_UPDATE_REPOSITORY` and `INSTALL_UPDATE_REF`.
 
 The installer copies the command to `~/.local/bin/emu`, its modules to `~/.local/lib/emu`, and Bash completion to `~/.local/share/bash-completion/completions/emu` by default.
 For a user installation, it adds an idempotent POSIX block to `~/.profile` so `~/.local/bin` is included in the global user-session `PATH` only when absent. It also configures `~/.bashrc` and `~/.config/fish/config.fish` for interactive Bash and Fish terminals. Bash completion is loaded automatically in Bash.
 With `--system`, it uses `/usr/local/bin/emu`, `/usr/local/lib/emu`, and `/usr/local/share/bash-completion/completions/emu`.
 Before copying, `--install` removes the previous installed command and previous installed `.bash` modules in the target directory.
-Use `--update` from the repository checkout to compare the command, each module, and Bash completion by SHA-256 hash; unchanged files are left untouched, and only changed files are copied.
+Use `--update` to download the remote repository and compare the command, each module, and Bash completion by SHA-256 hash; unchanged files are left untouched, and only changed files are copied.
 `--update --system` applies the same logic to `/usr/local/bin/emu`, `/usr/local/lib/emu`, and `/usr/local/share/bash-completion/completions/emu`.
 The `emu` command is available automatically after opening a new terminal; a new login session also receives the path from `~/.profile`. Bash completion is available in Bash. Run `source ~/.local/share/bash-completion/completions/emu` to enable both immediately in an already-open Bash shell. In an already-open Fish shell, run `fish_add_path ~/.local/bin`.
 

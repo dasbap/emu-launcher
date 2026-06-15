@@ -4,6 +4,8 @@
 
 Wrapper Bash léger permettant de lancer des émulateurs configurés depuis la ligne de commande. La commande publique est `emu`; l'implémentation principale se trouve dans les modules Bash sous `lib/emu/`. L'installation et les mises à jour sont fournies par le paquet voisin partagé `install-update-launcher`.
 
+`emu` installe et met à jour uniquement son propre paquet. L'installation de plusieurs projets est réservée à `uni-launcher`.
+
 ## Installation
 
 Utilisez l'installateur intégré afin de copier ensemble la commande, les modules, la bibliothèque d'installation partagée et la complétion :
@@ -14,7 +16,9 @@ Utilisez l'installateur intégré afin de copier ensemble la commande, les modul
 ./emu --update
 ```
 
-Pendant le développement, conservez `install-update-launcher` à côté de `emu-launcher`. La commande installée reçoit sa propre copie de la bibliothèque partagée et reste autonome. La bibliothèque peut aussi être sélectionnée avec `INSTALL_UPDATE_LAUNCHER_LIB=/path/to/install-update-launcher.bash`.
+Pour une installation autonome, clonez ou téléchargez ce dépôt puis exécutez `./emu --install`. Si la bibliothèque partagée est absente, l'installateur la télécharge depuis `https://github.com/dasbap/install-update-launcher.git`. La commande installée reçoit sa propre copie et reste autonome.
+
+`emu --update` télécharge la branche `main` de `https://github.com/dasbap/emu-launcher.git`. La source peut être remplacée avec `EMU_REPOSITORY` et `EMU_REF`; la dépendance partagée avec `INSTALL_UPDATE_REPOSITORY` et `INSTALL_UPDATE_REF`.
 
 L'installation utilisateur place `emu` dans `~/.local/bin/emu`, ses modules dans `~/.local/lib/emu` et la complétion Bash dans `~/.local/share/bash-completion/completions/emu`. Elle configure également `~/.profile`, `~/.bashrc` et `~/.config/fish/config.fish`.
 

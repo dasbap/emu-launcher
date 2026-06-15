@@ -116,12 +116,46 @@ HOME="$TEST_HOME" "$ROOT/emu" --install >/dev/null
 printf 'changed command\n' > "$TEST_HOME/.local/bin/emu"
 printf 'changed module\n' > "$TEST_HOME/.local/lib/emu/core.bash"
 printf 'changed completion\n' > "$TEST_HOME/.local/share/bash-completion/completions/emu"
-update_output="$(HOME="$TEST_HOME" "$ROOT/emu" --update)"
+EMU_REMOTE="$TMP/emu-remote"
+mkdir -p "$EMU_REMOTE/lib/emu" "$EMU_REMOTE/completions"
+cp "$ROOT/emu" "$EMU_REMOTE/emu"
+cp "$ROOT"/lib/emu/*.bash "$EMU_REMOTE/lib/emu/"
+cp "$ROOT/completions/emu.bash" "$EMU_REMOTE/completions/emu.bash"
+git -C "$EMU_REMOTE" init -q
+git -C "$EMU_REMOTE" config user.name test
+git -C "$EMU_REMOTE" config user.email test@example.invalid
+git -C "$EMU_REMOTE" add -A
+git -C "$EMU_REMOTE" commit -qm initial
+git -C "$EMU_REMOTE" branch -M main
+update_output="$(HOME="$TEST_HOME" EMU_REPOSITORY="file://$EMU_REMOTE" "$ROOT/emu" --update)"
 assert_contains "$update_output" "Updated command"
 assert_contains "$update_output" "Updated module core.bash"
 assert_contains "$update_output" "Updated Bash completion"
 assert_contains "$update_output" "Unchanged module config.bash"
 HOME="$TEST_HOME" PATH="/usr/bin:/bin" bash -c "source '$TEST_HOME/.local/share/bash-completion/completions/emu'; command -v emu; complete -p emu" >/dev/null
 HOME="$TEST_HOME" "$TEST_HOME/.local/bin/emu" --help >/dev/null
+
+SHARED_REMOTE="$TMP/shared-remote"
+mkdir -p "$SHARED_REMOTE/lib/install-update-launcher"
+cp "$ROOT/../install-update-launcher/install-update-launcher" "$SHARED_REMOTE/install-update-launcher"
+cp "$ROOT/../install-update-launcher/lib/install-update-launcher/install-update-launcher.bash" \
+  "$SHARED_REMOTE/lib/install-update-launcher/install-update-launcher.bash"
+git -C "$SHARED_REMOTE" init -q
+git -C "$SHARED_REMOTE" config user.name test
+git -C "$SHARED_REMOTE" config user.email test@example.invalid
+git -C "$SHARED_REMOTE" add -A
+git -C "$SHARED_REMOTE" commit -qm initial
+git -C "$SHARED_REMOTE" branch -M main
+
+ISOLATED_EMU="$TMP/isolated/emu-launcher"
+mkdir -p "$ISOLATED_EMU/lib/emu" "$ISOLATED_EMU/completions"
+cp "$ROOT/emu" "$ISOLATED_EMU/emu"
+cp "$ROOT"/lib/emu/*.bash "$ISOLATED_EMU/lib/emu/"
+cp "$ROOT/completions/emu.bash" "$ISOLATED_EMU/completions/emu.bash"
+ISOLATED_HOME="$TMP/isolated-home"; mkdir -p "$ISOLATED_HOME"
+HOME="$ISOLATED_HOME" INSTALL_UPDATE_REPOSITORY="file://$SHARED_REMOTE" \
+  "$ISOLATED_EMU/emu" --install >/dev/null
+[[ -x "$ISOLATED_HOME/.local/bin/emu" ]] || fail "isolated emu installation failed"
+[[ -f "$ISOLATED_HOME/.local/lib/emu/install-update-launcher.bash" ]] || fail "isolated emu did not download shared installer"
 
 echo "All tests passed."
