@@ -49,13 +49,15 @@ emu --map-ext iso dolphin
 Configurer les dossiers de ROM et les extensions analysées :
 
 ```bash
-emu --add-rom-path nes ~/Games/NES
-emu --add-rom-path ps2 ~/Games/PS2
+emu --add-rom-dir nes ~/Games/NES
+emu --add-rom-dir ps2 ~/Games/PS2
 emu --list-rom-ext
 emu --add-rom-ext wad
 emu --remove-rom-ext 7z
 emu scan
 ```
+
+Les anciennes entrées de configuration `rompath.*` sont migrées automatiquement vers `romdir.*`. Les anciens noms de commandes `--add-rom-path` et `--remove-rom-path` restent disponibles comme alias de compatibilité.
 
 Ajouter un jeu nommé et le lier à un émulateur :
 

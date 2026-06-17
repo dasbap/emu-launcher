@@ -12,14 +12,14 @@ _emu()
   config="${XDG_CONFIG_HOME:-$HOME/.config}/emu/config"
   games="${XDG_CONFIG_HOME:-$HOME/.config}/emu/games"
 
-  words="--help -h --list -l --foreground -f --dry-run --verbose -v scan doctor --add-emu --add-game --add-rom-path --remove-rom-path --add-rom-ext --remove-rom-ext --list-rom-ext --link --unlink --remove-game --remove-emu --map-ext --install -i --update --system --channel --ref stable prerelease development --merge-config --force-config --clear-config"
+  words="--help -h --list -l --foreground -f --dry-run --verbose -v scan doctor --add-emu --add-game --add-rom-dir --remove-rom-dir --add-rom-path --remove-rom-path --add-rom-ext --remove-rom-ext --list-rom-ext --link --unlink --remove-game --remove-emu --map-ext --install -i --update --system --channel --ref stable prerelease development --merge-config --force-config --clear-config"
 
   case "$prev" in
     --channel)
       COMPREPLY=( $(compgen -W "stable prerelease development" -- "$cur") )
       return 0
       ;;
-    --add-emu|--add-game|--add-rom-path|--add-rom-ext|--map-ext)
+    --add-emu|--add-game|--add-rom-dir|--add-rom-path|--add-rom-ext|--map-ext)
       return 0
       ;;
   esac
@@ -32,7 +32,7 @@ _emu()
   if [[ -f "$config" ]]; then
     while IFS='=' read -r key _; do
       [[ -z "$key" || "$key" == \#* ]] && continue
-      [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == rompath.* ]] && continue
+      [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == romdir.* || "$key" == rompath.* ]] && continue
       words="$words $key"
     done < "$config"
   fi

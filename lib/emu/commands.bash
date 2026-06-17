@@ -36,7 +36,7 @@ list_config() {
     [[ -z "$line" ]] && continue
     key="${line%%=*}"
     val="${line#*=}"
-    [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == rompath.* ]] && continue
+    [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == romdir.* || "$key" == rompath.* ]] && continue
     res="$(cfg_get_resolved "$CONFIG" "$key")"
     if [[ -n "$res" ]]; then
       printf '%s -> %s (resolved: %s)\n' "$key" "$val" "$res"
@@ -85,25 +85,26 @@ handle_config_command() {
       echo "Added emulator '$name' -> $bin (resolved: $bin_resolved) to $CONFIG"
       exit 0
       ;;
-    --add-rom-path)
+    --add-rom-dir|--add-rom-path)
       if [[ -z "${2:-}" || -z "${3:-}" ]]; then
-        die "Usage: emu --add-rom-path <name> <path>" 1
+        die "Usage: emu --add-rom-dir <name> <path>" 1
       fi
       name="$2"; path="$3"
-      valid_name "$name" || die "Invalid ROM path name '$name' (allowed: letters, numbers, ., _, -)" 1
-      cfg_set "$CONFIG" "rompath.$name" "$path"
-      echo "Added ROM path '$name' -> $path"
+      valid_name "$name" || die "Invalid ROM directory name '$name' (allowed: letters, numbers, ., _, -)" 1
+      cfg_set "$CONFIG" "romdir.$name" "$path"
+      cfg_delete_key "$CONFIG" "rompath.$name" >/dev/null || true
+      echo "Added ROM directory '$name' -> $path"
       exit 0
       ;;
-    --remove-rom-path)
+    --remove-rom-dir|--remove-rom-path)
       if [[ -z "${2:-}" ]]; then
-        die "Usage: emu --remove-rom-path <name>" 1
+        die "Usage: emu --remove-rom-dir <name>" 1
       fi
       name="$2"
-      if cfg_delete_key "$CONFIG" "rompath.$name"; then
-        echo "Removed ROM path '$name'"
+      if cfg_delete_key "$CONFIG" "romdir.$name" || cfg_delete_key "$CONFIG" "rompath.$name"; then
+        echo "Removed ROM directory '$name'"
       else
-        die "ROM path '$name' not found" 2
+        die "ROM directory '$name' not found" 2
       fi
       exit 0
       ;;

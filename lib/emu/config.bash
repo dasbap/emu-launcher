@@ -7,9 +7,29 @@ ensure_config() {
 EOF
   fi
   ensure_default_rom_extensions
+  migrate_legacy_rompath_keys
   if [[ ! -f "$GAMES_CONFIG" ]]; then
     touch "$GAMES_CONFIG"
   fi
+}
+
+migrate_legacy_rompath_keys() {
+  local tmp line key val new_key
+  [[ -f "$CONFIG" ]] || return 0
+  tmp="$(mktemp "${CONFIG}.tmp.XXXXXX")"
+  while IFS= read -r line; do
+    if [[ "$line" == rompath.*=* ]]; then
+      key="${line%%=*}"
+      val="${line#*=}"
+      new_key="romdir.${key#rompath.}"
+      if ! cfg_has "$CONFIG" "$new_key"; then
+        printf '%s=%s\n' "$new_key" "$val" >> "$tmp"
+      fi
+      continue
+    fi
+    printf '%s\n' "$line" >> "$tmp"
+  done < "$CONFIG"
+  mv "$tmp" "$CONFIG"
 }
 
 ensure_default_rom_extensions() {

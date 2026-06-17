@@ -73,16 +73,18 @@ emu --map-ext nes retroarch
 emu --map-ext iso dolphin
 ```
 
-Configure ROM folders and the extensions used by `emu scan`:
+Configure ROM directories and the extensions used by `emu scan`:
 
 ```bash
-emu --add-rom-path nes ~/Games/NES
-emu --add-rom-path ps2 ~/Games/PS2
+emu --add-rom-dir nes ~/Games/NES
+emu --add-rom-dir ps2 ~/Games/PS2
 emu --list-rom-ext
 emu --add-rom-ext wad
 emu --remove-rom-ext 7z
 emu scan
 ```
+
+Older `rompath.*` configuration entries are migrated automatically to `romdir.*`. The legacy `--add-rom-path` and `--remove-rom-path` command names still work as compatibility aliases.
 
 Default scan extensions are: `nes`, `smc`, `sfc`, `gb`, `gbc`, `gba`, `nds`, `n64`, `z64`, `v64`, `iso`, `cue`, `bin`, `chd`, `cso`, `rvz`, `wbfs`, `zip`, `7z`.
 
@@ -117,7 +119,7 @@ emu --clear-config
 
 Run `emu` without arguments to display the help. This behaves like `emu --help` and does not create or modify the user configuration.
 
-List configured emulators only. Extension mappings, ROM paths, and scan extensions are managed by their dedicated commands and are not shown here.
+List configured emulators only. Extension mappings, ROM directories, and scan extensions are managed by their dedicated commands and are not shown here.
 
 ```bash
 emu --list

@@ -19,8 +19,8 @@ Usage:
   emu doctor
   emu --add-emu <name> <path>
   emu --add-game <name> <path>
-  emu --add-rom-path <name> <path>
-  emu --remove-rom-path <name>
+  emu --add-rom-dir <name> <path>
+  emu --remove-rom-dir <name>
   emu --add-rom-ext <extension>
   emu --remove-rom-ext <extension>
   emu --list-rom-ext

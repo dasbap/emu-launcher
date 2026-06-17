@@ -48,8 +48,9 @@ assert_contains "$empty_output" "Usage:"
 "$ROOT/emu" --add-emu fake "$TMP/bin/fake-emu"
 "$ROOT/emu" --map-ext nes fake
 "$ROOT/emu" --map-ext gba fake
-"$ROOT/emu" --add-rom-path main "$TMP/roms"
+"$ROOT/emu" --add-rom-dir main "$TMP/roms"
 "$ROOT/emu" --add-rom-ext wad
+grep -q '^romdir.main=' "$XDG_CONFIG_HOME/emu/config" || fail "--add-rom-dir should write romdir.*"
 
 exts="$("$ROOT/emu" --list-rom-ext)"
 assert_contains "$exts" ".nes"
@@ -58,17 +59,22 @@ assert_contains "$exts" ".wad"
 list_output="$("$ROOT/emu" --list)"
 assert_contains "$list_output" "fake -> $TMP/bin/fake-emu"
 [[ "$list_output" != *"romext."* ]] || fail "--list should not show ROM scan extensions"
-[[ "$list_output" != *"rompath."* ]] || fail "--list should not show ROM paths"
+[[ "$list_output" != *"romdir."* ]] || fail "--list should not show ROM directories"
+[[ "$list_output" != *"rompath."* ]] || fail "--list should not show legacy ROM paths"
 [[ "$list_output" != *"ext."* ]] || fail "--list should not show extension mappings"
 
 "$ROOT/emu" --clear-config >/dev/null
 empty_list_output="$("$ROOT/emu" --list)"
 [[ -z "$empty_list_output" ]] || fail "--list should be empty after clearing config without emulators"
+printf 'rompath.legacy=%s\n' "$TMP/roms" >> "$XDG_CONFIG_HOME/emu/config"
+"$ROOT/emu" --list >/dev/null
+grep -q '^romdir.legacy=' "$XDG_CONFIG_HOME/emu/config" || fail "legacy rompath.* should migrate to romdir.*"
+! grep -q '^rompath.legacy=' "$XDG_CONFIG_HOME/emu/config" || fail "legacy rompath.* should be removed after migration"
 
 "$ROOT/emu" --add-emu fake "$TMP/bin/fake-emu"
 "$ROOT/emu" --map-ext nes fake
 "$ROOT/emu" --map-ext gba fake
-"$ROOT/emu" --add-rom-path main "$TMP/roms"
+"$ROOT/emu" --add-rom-dir main "$TMP/roms"
 "$ROOT/emu" --add-rom-ext wad
 [[ "$("$ROOT/emu" --list-rom-ext)" == *".nes"* ]] || fail "default ROM extensions should still exist after config recreation"
 
@@ -85,7 +91,7 @@ assert_contains "$doctor_output" "OK config directory is readable and writable"
 assert_contains "$doctor_output" "OK emulator executable"
 assert_contains "$doctor_output" "OK game readable"
 
-"$ROOT/emu" --remove-rom-path main >/dev/null
+"$ROOT/emu" --remove-rom-dir main >/dev/null
 "$ROOT/emu" --remove-rom-ext wad >/dev/null
 
 printf 'old command\n' > "$TEST_HOME/.local/bin/emu"

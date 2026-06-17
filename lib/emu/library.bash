@@ -4,7 +4,7 @@ emulator_count() {
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
     [[ -z "$line" ]] && continue
     key="${line%%=*}"
-    [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == rompath.* ]] && continue
+    [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == romdir.* || "$key" == rompath.* ]] && continue
     ((count += 1))
   done < "$CONFIG"
   printf '%s\n' "$count"
@@ -16,7 +16,7 @@ first_emulator_name() {
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
     [[ -z "$line" ]] && continue
     key="${line%%=*}"
-    [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == rompath.* ]] && continue
+    [[ "$key" == *.__resolved || "$key" == ext.* || "$key" == romext.* || "$key" == romdir.* || "$key" == rompath.* ]] && continue
     printf '%s\n' "$key"
     return 0
   done < "$CONFIG"
@@ -66,11 +66,11 @@ scan_roms() {
   local line key path dir file base ext game_name unique_name emu_name added=0 skipped=0
   while IFS= read -r line; do
     key="${line%%=*}"
-    [[ "$key" == rompath.* ]] || continue
+    [[ "$key" == romdir.* ]] || continue
     path="${line#*=}"
     dir="$(resolve_path "$path")"
     if [[ ! -d "$dir" || ! -r "$dir" ]]; then
-      printf 'Skipping unreadable ROM path: %s\n' "$path" >&2
+      printf 'Skipping unreadable ROM directory: %s\n' "$path" >&2
       ((skipped += 1))
       continue
     fi
@@ -130,12 +130,12 @@ doctor() {
       fi
       continue
     fi
-    if [[ "$key" == rompath.* ]]; then
+    if [[ "$key" == romdir.* ]]; then
       target="$(resolve_path "$val")"
       if [[ -d "$target" && -r "$target" && -x "$target" ]]; then
-        printf 'OK ROM path readable: %s -> %s\n' "$key" "$target"
+        printf 'OK ROM directory readable: %s -> %s\n' "$key" "$target"
       else
-        printf 'FAIL ROM path missing or unreadable: %s -> %s\n' "$key" "$target"
+        printf 'FAIL ROM directory missing or unreadable: %s -> %s\n' "$key" "$target"
         status=1
       fi
       continue
